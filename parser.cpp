@@ -48,6 +48,7 @@ void ParseError(int line, string msg)
 	cout << line << ": " << msg << endl;
 }
 
+// Prog ::= PROCEDURE ProcName IS ProcBody
 bool Prog(istream& in, int& line) {
 	LexItem tok; 
 	cout << "Line" << line << "(in prog)" << endl;
@@ -217,14 +218,21 @@ bool DeclStmt(istream& in, int& line) {
 	return true;
 }
 
+// Type ::= INTEGER | FLOAT | BOOLEAN | STRING | CHARACTER
 bool Type(istream& in, int& line)
 {
 	LexItem tok;
 	cout << "Line" << line << "(in Type)" << endl;
 
 	tok = Parser::GetNextToken(in, line);
-	if (tok == INT | tok == FLOAT)
-
+	if (tok == INT || tok == FLOAT || tok == BOOL || tok == STRING || tok == CHAR)
+	{	
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 //GIVEN FUNCTION - DON'T TOUCH
