@@ -254,6 +254,87 @@ bool Type(istream& in, int& line)
 	}
 }
 
+// Expr ::= Relation {(AND | OR) Relation }
+bool Expr(istream& in, int& line)
+{
+	LexItem tok;
+	cout << "Line" << line << "(in Expr)" << endl;
+
+	return false;
+}
+
+// Relation ::= SimpleExpr [ ( = | /= | < | <= | > | >= ) SimpleExpr ]
+bool Relation(istream& in, int& line)
+{
+	LexItem tok;
+	cout << "Line" << line << "(in Relation)" << endl;
+
+	return false;
+}
+
+// SimpleExpr ::= STerm { ( + | - | & ) STerm }
+bool SimpleExpr(istream& in, int& line)
+{
+	LexItem tok;
+	cout << "Line" << line << "(in SimpleExpr)" << endl;
+
+	return false;
+}
+
+// STerm ::= [ ( + | - ) ] Term
+bool STerm(istream& in, int& line)
+{
+	LexItem tok;
+	cout << "Line" << line << "(in STerm)" << endl;
+
+	return false;
+}
+
+// Term ::= Factor { ( * | / | MOD ) Factor } 
+bool Term(istream& in, int& line)
+{
+	LexItem tok;
+	cout << "Line" << line << "(in Term)" << endl;
+
+	return false;
+}
+
+// Factor ::= Primary [** [(+ | -)] Primary ] | NOT Primary
+bool Factor(istream& in, int& line)
+{
+	LexItem tok;
+	cout << "Line" << line << "(in Factor)" << endl;
+
+	return false;
+}
+
+// Primary ::= Name | ICONST | FCONST | SCONST | BCONST | CCONST | (Expr)
+bool Primary(istream& in, int& line)
+{
+	LexItem tok;
+	cout << "Line" << line << "(in Primary)" << endl;
+
+	return false;
+}
+
+// Name ::= IDENT [ ( Range ) ] 
+bool Name(istream& in, int& line)
+{
+	LexItem tok;
+	cout << "Line" << line << "(in Name)" << endl;
+
+	return false;
+}
+
+// Range ::= SimpleExpr [. . SimpleExpr ]
+bool Range(istream& in, int& line)
+{
+	LexItem tok;
+	cout << "Line" << line << "(in Range)" << endl;
+
+	return false;
+}
+
 //GIVEN FUNCTION - DON'T TOUCH
 //StmtList ::= Stmt { Stmt }
 bool StmtList(istream& in, int& line)
