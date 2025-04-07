@@ -18,6 +18,9 @@ namespace Parser {
 	static LexItem GetNextToken(istream& in, int& line) {
 		if( pushed_back ) {
 			pushed_back = false;
+			temp = pushed_token;
+			cout << "Parsing pushed token: " << temp;
+
 			return pushed_token;
 		}
 		temp = getNextToken(in, line);
@@ -87,7 +90,7 @@ bool ProcBody(istream& in, int& line) {
 	cout << "Line" << line << "(in procbody)" << endl;
 	
 	if (!DeclPart(in, line)) {
-		ParseError(line, "Not a declaration.");
+		ParseError(line, "Incorrect procedure body.");
 		return false;
 	}
 	tok = Parser::GetNextToken(in, line); 
@@ -128,7 +131,6 @@ bool ProcBody(istream& in, int& line) {
 bool DeclPart(istream& in, int& line) {
 	bool status = false;
 	LexItem tok;
-	// cout << "in DeclPart" << endl;
 	cout << "Line" << line << "(in declpart)" << endl;
 	status = DeclStmt(in, line);
 	if(status)
@@ -194,6 +196,7 @@ bool DeclStmt(istream& in, int& line) {
 		//End of variable declaration, break out of while loop
 		else if (tok == COLON)
 		{
+			// cout << "in COLON conditional" << endl;
 			tok = Parser::GetNextToken(in, line);
 			status = false;
 		}
@@ -204,17 +207,33 @@ bool DeclStmt(istream& in, int& line) {
 		}
 	}
 
-	//Optional constant
+	//Optional CONSTANT
 	if (tok == CONST)
 	{
 		tok = Parser::GetNextToken(in, line);
 	}
 
-	if (Type(in, line))
+	// Required TYPE
+	// PushBackToken so can re-evaluate the same token in Type()
+	Parser::PushBackToken(tok);
+	if (!Type(in, line))
 	{
-
+		ParseError(line, "Incorrect Declaration Type.");
+		return false;		
 	}
+	tok = Parser::GetNextToken(in, line);
 	
+		
+	//TODO: handle [(Range)]
+	//TODO: handle [:= Expr]
+
+	// Check for SEMICOL at end of DeclStmt
+	if (tok != SEMICOL)
+	{
+		ParseError(line, "Missing semicolon at end of statement.");
+		return false;
+	}
+
 	return true;
 }
 

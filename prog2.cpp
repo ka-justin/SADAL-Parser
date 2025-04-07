@@ -50,7 +50,6 @@ int main(int argc, char *argv[])
 	}
     
     bool status = Prog(*in, lineNumber);
-    cout << status; 
     if( !status )
     {
         cout << "Unsuccessful Parsing" << endl << "Number of Syntax Errors " << ErrCount() << endl;
