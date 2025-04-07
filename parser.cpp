@@ -145,6 +145,7 @@ bool DeclPart(istream& in, int& line) {
 		{
 			Parser::PushBackToken(tok);
 			status = DeclPart(in, line);
+			cout << "STATUS:" << status << endl;
 		}
 	}
 	else
@@ -225,7 +226,17 @@ bool DeclStmt(istream& in, int& line) {
 	
 		
 	//TODO: handle [(Range)]
-	//TODO: handle [:= Expr]
+	// Check for ASSOP(:=) for start of Expr	
+	if (tok == ASSOP)
+	{
+		// Parser::PushBackToken(tok);
+		if(!Expr(in, line))
+		{
+			ParseError(line, "Incorrect declaration statement.");
+			return false;			
+		}
+		tok = Parser::GetNextToken(in, line);
+	}
 
 	// Check for SEMICOL at end of DeclStmt
 	if (tok != SEMICOL)
@@ -260,6 +271,19 @@ bool Expr(istream& in, int& line)
 	LexItem tok;
 	cout << "Line" << line << "(in Expr)" << endl;
 
+	tok = Parser::GetNextToken(in, line);
+	Parser::PushBackToken(tok);
+	if (!Relation(in, line))
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+	
+	//TODO: {AND | OR}
+
 	return false;
 }
 
@@ -268,6 +292,18 @@ bool Relation(istream& in, int& line)
 {
 	LexItem tok;
 	cout << "Line" << line << "(in Relation)" << endl;
+
+	tok = Parser::GetNextToken(in, line);
+	Parser::PushBackToken(tok);
+	if (!SimpleExpr(in, line))
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+	//TODO: handle optional SimpleExpr
 
 	return false;
 }
@@ -278,6 +314,18 @@ bool SimpleExpr(istream& in, int& line)
 	LexItem tok;
 	cout << "Line" << line << "(in SimpleExpr)" << endl;
 
+	tok = Parser::GetNextToken(in, line);
+	Parser::PushBackToken(tok);
+	if (!STerm(in, line))
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+	//TODO: handle optional STerm
+
 	return false;
 }
 
@@ -287,32 +335,76 @@ bool STerm(istream& in, int& line)
 	LexItem tok;
 	cout << "Line" << line << "(in STerm)" << endl;
 
+	tok = Parser::GetNextToken(in, line);
+	Parser::PushBackToken(tok);
+	//TODO: handle optional unary operators
+	if (!Term(in, line, -1))
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+
 	return false;
 }
 
 // Term ::= Factor { ( * | / | MOD ) Factor } 
-bool Term(istream& in, int& line)
+bool Term(istream& in, int& line, int sign = 1)
 {
 	LexItem tok;
 	cout << "Line" << line << "(in Term)" << endl;
+
+	tok = Parser::GetNextToken(in, line);
+	Parser::PushBackToken(tok);
+	if (!Factor(in, line, -1))
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+	//TODO: handle optional unary factors
 
 	return false;
 }
 
 // Factor ::= Primary [** [(+ | -)] Primary ] | NOT Primary
-bool Factor(istream& in, int& line)
+bool Factor(istream& in, int& line, int sign = 1)
 {
 	LexItem tok;
 	cout << "Line" << line << "(in Factor)" << endl;
+
+	tok = Parser::GetNextToken(in, line);
+	Parser::PushBackToken(tok);
+	if (!Primary(in, line, -1))
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+	//TODO: handle optional Primary
 
 	return false;
 }
 
 // Primary ::= Name | ICONST | FCONST | SCONST | BCONST | CCONST | (Expr)
-bool Primary(istream& in, int& line)
+bool Primary(istream& in, int& line, int sign = 1)
 {
 	LexItem tok;
 	cout << "Line" << line << "(in Primary)" << endl;
+
+	tok = Parser::GetNextToken(in, line);
+	//TODO: handle name & expr
+
+	if (tok == ICONST || tok == FCONST || tok == SCONST || tok == BCONST || tok == CCONST)
+	{
+		return true;
+	}
 
 	return false;
 }
